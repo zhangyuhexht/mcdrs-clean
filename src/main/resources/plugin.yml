@@ -1,0 +1,24 @@
+name: MCDRSClean
+version: ${version}
+main: top.mcdrsclean.MCDRSClean
+api-version: '26.3'
+softdepend:
+  - PlaceholderAPI
+authors: [ MCDRSClean ]
+description: MCDRS Clean - 轻量实体清理插件
+commands:
+  mcdrsclean:
+    description: 插件主命令
+    aliases:
+      - mcdrs
+      - mc
+permissions:
+  mcdrs.admin:
+    default: op
+    description: 允许使用插件管理指令
+  mcdrs.clean:
+    default: op
+    description: 允许执行清理指令
+  mcdrs.trash:
+    default: op
+    description: 允许打开垃圾桶

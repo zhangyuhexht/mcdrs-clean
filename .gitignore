@@ -1,0 +1,14 @@
+# Gradle / IDE / build artifacts
+.gradle/
+build/
+.kotlin/
+.idea/
+*.iml
+
+# Local logs and runtime files
+*.log
+*.log.*
+.DS_Store
+
+# gradle/wrapper/gradle-wrapper.jar is committed on purpose,
+# so ./gradlew works right after cloning.
