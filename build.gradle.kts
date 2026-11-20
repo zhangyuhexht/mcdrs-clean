@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    // Kotlin 2.4.x + Gradle 9.x: 支持在 JDK 25 上编译
+    // Kotlin 2.4.x + Gradle 9.x: compiles on JDK 25
     kotlin("jvm") version "2.4.21"
     kotlin("plugin.serialization") version "2.4.21"
     id("com.gradleup.shadow") version "9.6.1"
@@ -11,20 +11,20 @@ group = "top.mcdrsclean"
 version = "1.21.0"
 val epluginVer = "1.4.0"
 
-// Paper 26.x 起版本号改为 year.drop 形式, artifact 不再带 -R0.1-SNAPSHOT 后缀.
-// 若希望自动跟随 26.3 的最新构建, 可改为 "26.3.build.+".
+// Paper 26.x switched to year.drop versions; artifacts no longer carry the -R0.1-SNAPSHOT suffix.
+// Use "26.3.build.+" to follow the latest 26.3 build automatically.
 val paperApiVer = "26.3.build.244-stable"
 
-// EPlugin 是第三方 Kotlin 工具库, 其 Maven 坐标/类命名空间属于上游,
-// 与 MCDRS Clean 自身的命名空间无关, 不能随本插件改名, 否则无法解析依赖.
+// EPlugin is a third-party Kotlin library; its coordinates and namespace belong upstream
+// and are unrelated to this plugin, so they must not be renamed or dependency resolution breaks.
 fun eplugin(module: String, version: String = epluginVer) = "top.e404:eplugin-$module:$version"
 
 repositories {
-    // eplugin 由作者私有仓库发布, 需先安装到 mavenLocal 或保证该仓库可访问
+    // eplugin is published in a private repo; install it to mavenLocal first
     mavenLocal()
     // papermc (paper-api 26.3)
     maven("https://repo.papermc.io/repository/maven-public/")
-    // spigot (eplugin 依赖)
+    // spigot (eplugin dependency)
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     // sonatype
     maven("https://oss.sonatype.org/content/groups/public/")
@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    // Paper 26.3 API (Java 25 字节码)
+    // Paper 26.3 API (Java 25 bytecode)
     compileOnly("io.papermc.paper:paper-api:$paperApiVer")
     // eplugin
     implementation(eplugin("core"))
@@ -46,7 +46,7 @@ dependencies {
     // Bstats
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
-    // 测试套件仍基于 MockBukkit 1.20, 与运行时核心解耦, 构建发布包请用 shadowJar 任务
+    // Tests still target MockBukkit 1.20 and are decoupled from the runtime core; use shadowJar for releases
     testImplementation(kotlin("test", "2.4.21"))
     testImplementation("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.87.0")
@@ -60,8 +60,8 @@ java {
 }
 
 kotlin {
-    // Paper 26.1 起要求 Java 25, paper-api 26.3 也是 Java 25 字节码(class file 69),
-    // 因此编译必须使用 JDK 25; 产物保持 Java 21 字节码, 在 Java 25 服务端可正常运行.
+    // Paper 26.1+ requires Java 25 and paper-api 26.3 is Java 25 bytecode (class file 69),
+    // so compilation needs JDK 25; the output stays at Java 21 bytecode and runs fine on Java 25 servers.
     jvmToolchain(25)
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
@@ -73,8 +73,8 @@ tasks {
         finalizedBy(shadowJar)
     }
 
-    // 普通 jar 与 shadowJar 默认同名, 跑 test/build 时后者会被前者覆盖,
-    // 给瘦 jar 加 classifier 避免发布产物被意外替换
+    // jar and shadowJar share a name by default, so test/build would overwrite the shaded jar,
+    // give the thin jar a classifier to protect the release artifact
     jar {
         archiveClassifier.set("plain")
     }

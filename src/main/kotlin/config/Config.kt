@@ -19,7 +19,7 @@ object Config : KtxConfig<ConfigData>(
     serializer = ConfigData.serializer(),
     format = Yaml(configuration = YamlConfiguration(strictMode = false))
 ) {
-    // 加载时处理清理task
+    // schedule cleanup tasks on load
     override fun onLoad(config: ConfigData, sender: CommandSender?) {
         if (Bukkit.isPrimaryThread()) {
             Trashcan.schedule()
@@ -32,22 +32,22 @@ object Config : KtxConfig<ConfigData>(
 @Serializable
 data class ConfigData(
     var debug: Boolean = false,
-    // 检查更新默认关闭: 无外网环境(尤其国内)启动时不必发请求
-    // 保留仅为兼容旧配置文件; MCDRS Clean 已移除自动更新检查
+    // update check off by default so offline servers do not make requests on startup
+    // kept only for old config compatibility; MCDRS Clean no longer checks for updates
     var update: Boolean = false,
     @SerialName("console_broadcast")
     var consoleBroadcast: Boolean = false,
-    // 每 tick 处理/移除的实体数, 用于分片清理
+    // entities handled per tick for batched cleanup
     @SerialName("batch_size")
     var batchSize: Int = 200,
     var bstats: Boolean = true,
-    // 以下字段全部给默认值: 用户手改配置漏了某一项时, 不会因为反序列化失败导致插件起不来
+    // all fields have defaults, so a missing key in a hand-edited config cannot stop the plugin from loading
     var duration: Long = 600,
     var message: MutableMap<Long, String> = mutableMapOf(
-        60L to "&f将在1分钟后进行清理",
-        30L to "&f将在30秒后进行清理",
-        10L to "&f将在10秒后进行清理",
-        0L to "&f正在清理",
+        60L to "&fentities will be cleaned in 1 minute",
+        30L to "&fentities will be cleaned in 30 seconds",
+        10L to "&fentities will be cleaned in 10 seconds",
+        0L to "&fcleaning now",
     ),
     var living: LivingConfig = LivingConfig(),
     var drop: DropConfig = DropConfig(),

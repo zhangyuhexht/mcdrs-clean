@@ -5,20 +5,20 @@ api-version: '26.3'
 softdepend:
   - PlaceholderAPI
 authors: [ MCDRSClean ]
-description: MCDRS Clean - 轻量实体清理插件
+description: MCDRS Clean - lightweight entity cleanup plugin
 commands:
   mcdrsclean:
-    description: 插件主命令
+    description: Main plugin command
     aliases:
       - mcdrs
       - mc
 permissions:
   mcdrs.admin:
     default: op
-    description: 允许使用插件管理指令
+    description: Allows use of plugin admin commands
   mcdrs.clean:
     default: op
-    description: 允许执行清理指令
+    description: Allows execution of cleanup commands
   mcdrs.trash:
     default: op
-    description: 允许打开垃圾桶
+    description: Allows opening the trash can

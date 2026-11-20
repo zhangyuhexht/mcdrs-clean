@@ -1,64 +1,63 @@
-# 若设置为true则会在后台输出检查的详细信息
+# Set to true to print detailed check information to the console
 debug: false
 
-# 保留此项仅为兼容旧配置文件; MCDRS Clean 不再内置自动更新检查
+# Kept only for compatibility with old config files; MCDRS Clean no longer checks for updates
 update: false
 
-# 是否上报 bstats 统计(需先在 MCDRSClean.kt 中填入自有的 bstatsId, 否则不会上报)
+# Whether to report stats to bstats (requires your own bstatsId in MCDRSClean.kt, otherwise nothing is sent)
 bstats: false
 
-# 分片清理: 每 tick 处理/移除的实体数量
-# 调小可以让单 tick 更轻但整体更慢; 实体多的大服可据此平衡
+# Batched cleanup: number of entities handled per tick
+# Lower values keep each tick lighter but take longer overall; tune this on high-entity servers
 batch_size: 200
 
-# 每次清理的间隔时长, 单位秒
+# Seconds between cleanups
 duration: 600
 
-# 是否把清理倒计时/清理结果等广播消息也输出到后台(控制台/日志文件)
-# 默认 false: 消息只发给在线玩家, 后台不再刷屏, 也不占用日志空间
-# 设置为 true 可恢复旧版行为(后台同步打印每条广播)
+# Also print countdown and cleanup broadcasts to the console / log file
+# false (default): messages go to online players only, no console spam or log bloat
+# true: restore the old behaviour and print every broadcast to the console
 console_broadcast: false
 
-# 清理前的消息
-# 格式 时长: 对应时长的消息
-# 如 60: 将在1分钟后清理实体
+# Messages shown before a cleanup
+# Format: seconds remaining: message
+# e.g. 60: entities will be cleaned in 1 minute
 message:
-  60: "&f将在1分钟后进行清理"
-  30: "&f将在30秒后进行清理"
-  10: "&f将在10秒后进行清理"
-  0: "&f正在清理"
+  60: "&fEntities will be cleaned in 1 minute"
+  30: "&fEntities will be cleaned in 30 seconds"
+  10: "&fEntities will be cleaned in 10 seconds"
+  0: "&fCleaning now"
 
-# 清理'有生命的'实体
-# 比如僵尸或者牛
-# 展示框, 雪球等就不包含在内
+# Clean up living entities
+# Zombies, cows, and so on. Item frames, snowballs, etc. are not included
 living:
-  # 设置为true以启用
+  # Set to true to enable
   enable: true
 
-  # 禁用的世界(不支持正则)
+  # Worlds to skip (no regex)
   disable_world:
-    - "不清理的世界"
+    - "world-to-skip"
 
-  # 清理结束后的通知(设置为""以禁用)
-  finish: "&a生物清理完成, 已清理{clean}/{all}"
+  # Message shown after cleanup (set to "" to disable)
+  finish: "&aLiving entity cleanup finished, removed {clean}/{all}"
 
   settings:
-    # 若设置为true则清理被命名的生物
-    # 否则不清理清被命名的生物
+    # Set to true to remove named entities
+    # Set to false to leave them alone
     name: false
-    # 若设置为true则清理拴绳拴住的生物
-    # 否则不清理拴绳拴住的生物
+    # Set to true to remove leashed entities
+    # Set to false to leave them alone
     lead: false
-    # 若设置为true则清理乘骑中的生物(比如船上的生物, 或者载着玩家的马匹)
-    # 否则不清理乘骑中的生物
+    # Set to true to remove entities riding another entity (a mob in a boat, a player on a horse)
+    # Set to false to leave them alone
     mount: false
 
-  # 若设置为true则按黑名单匹配(名字匹配的才清理)
-  # 若设置为false则按白名单匹配(名字匹配的不清理)
+  # true: blacklist mode (only matching entities are removed)
+  # false: whitelist mode (matching entities are kept)
   is_black: true
 
-  # 清理的实体(支持正则)
-  # 此处的实体是清理所有符合settings中条件的实体(不会剩下)
+  # Entity types to clean (regex supported)
+  # Every entity matching here and passing the settings above will be removed
   # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
   match:
     - "BLAZE"
@@ -68,36 +67,32 @@ living:
     - "PHANTOM"
     - "PILLAGER"
 
-# 清理掉落物
+# Clean up dropped items
 drop:
-  # 设置为true以启用
+  # Set to true to enable
   enable: true
 
-  # 禁用的世界(不支持正则)
+  # Worlds to skip (no regex)
   disable_world:
-    - "不清理的世界"
+    - "world-to-skip"
 
-  # 清理结束后的通知(设置为""以禁用)
-  finish: "&a掉落物清理完成, 已清理{clean}/{all}"
+  # Message shown after cleanup (set to "" to disable)
+  finish: "&aDropped item cleanup finished, removed {clean}/{all}"
 
-  # 若设置为true则按黑名单匹配(名字匹配的才清理)
-  # 若设置为false则按白名单匹配(名字匹配的不清理)
+  # true: blacklist mode (only matching items are removed)
+  # false: whitelist mode (matching items are kept)
   is_black: false
 
-  # 若设置为true则不清理带附魔的物品
-  # 若设置为false则清理带附魔的物品
+  # true: keep enchanted items; false: remove them
   enchant: false
 
-  # 若设置为true则不清理带描述的物品
-  # 若设置为false则清理带描述的物品
+  # true: keep items with lore; false: remove them
   lore: false
 
-  # 若设置为true则不清理写过的书
-  # 若设置为false则清理写过的书 (match规则匹配时才会清理)
+  # true: keep written books; false: remove them (also requires a match rule)
   written_book: false
 
-
-  # 掉落物类型(支持正则)
+  # Item types to clean (regex supported)
   # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
   match:
     - "DIAMOND[A-Z_]*"
@@ -113,64 +108,66 @@ drop:
     - "DRAGON_EGG"
     - "ELYTRA"
 
-# 区块检查(密集实体清理)
+# Chunk checks (dense entity cleanup)
 chunk:
-  # 设置为true以启用
+  # Set to true to enable
   enable: true
 
-  # 禁用的世界(不支持正则)
+  # Worlds to skip (no regex)
   disable_world:
-    - "不清理的世界"
+    - "world-to-skip"
 
-  # 清理结束后的通知(设置为""以禁用)
-  finish: "&a密集实体清理完成, 清理{clean}个"
+  # Message shown after cleanup (set to "" to disable)
+  finish: "&aDense entity cleanup finished, removed {clean}"
 
   settings:
-    # 若设置为true则清理被命名的生物
-    # 否则不清理清被命名的生物
+    # Set to true to remove named entities
+    # Set to false to leave them alone
     name: false
-    # 若设置为true则清理拴绳拴住的生物
-    # 否则不清理拴绳拴住的生物
+    # Set to true to remove leashed entities
+    # Set to false to leave them alone
     lead: false
-    # 若设置为true则清理乘骑中的生物(比如船上的生物, 或者载着玩家的马匹)
-    # 否则不清理乘骑中的生物
+    # Set to true to remove entities riding another entity (a mob in a boat, a player on a horse)
+    # Set to false to leave them alone
     mount: false
 
-  # 未清理的实体提醒
-  # 进行通知所需要的数量(区块中的某种实体数量超过此数量)
+  # Alert threshold for entities left behind
+  # Notify when a chunk has more than this many of a given entity
   count: 50
 
-  # 发送消息的格式(有 mcdrs.admin 权限者会收到)
-  format: "{chunk}中{entity}的数量较多({count})"
+  # Message format (sent to players with the mcdrs.admin permission)
+  format: "Too many {entity} in {chunk} ({count})"
 
-  # 每区块允许的实体上限(正则)
-  # 匹配到的实体共用后面的上限
-  # 超过上限的实体将会被清理
+  # Per-chunk entity limits (regex)
+  # All matching types share the same limit
+  # Entities above the limit are removed
   # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
   limit:
-    # 怪物
+    # Hostile mobs
     ZOMBIE|SKELETON: 10
     SPIDER: 2
-    # 动物
+    # Passive mobs
     CHICKEN|PIG|COW|SHEEP: 50
-    # 投掷物
+    # Projectiles
     EGG|ENDER_PEARL|EXPERIENCE_ORB|FIREBALL|FIREWORK|SMALL_FIREBALL|SNOWBALL|ARROW|SPECTRAL_ARROW|SPLASH_POTION: 10
 
-# 公共垃圾桶设置
+# Shared trash can settings
 trashcan:
-  # 设置为false则禁用公共垃圾桶
+  # Set to false to disable the shared trash can
   enable: true
-  # 设置为true则掉落物清理的掉落物会收集到垃圾桶中
+  # Set to true to collect items removed by the dropped-item cleanup
   collect: true
-  # 清空垃圾桶的时间间隔, 单位秒, 设置为空则不会主动清理(可能导致内存泄露占用大量内存)
+  # Seconds between trash clears. Leave empty to disable automatic clearing
+  # (items can accumulate and use a lot of memory)
   duration: 6000
   despawn:
-    # 设置为true则回收despawn的物品
+    # Set to true to recover items that are about to despawn
     enable: false
-    # 禁用的世界(支持正则)
+    # Worlds to skip (regex supported)
     disable_world:
-      - "不回收的世界"
-    # 放入垃圾桶的掉落物类型(支持正则) 可以设置如下格式回收所有物品
+      - "world-to-skip"
+    # Item types collected into the trash can (regex supported)
+    # Use the following to collect everything:
     # match:
     #   - .*
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
@@ -188,9 +185,9 @@ trashcan:
       - "DRAGON_EGG"
       - "ELYTRA"
 
-# 无在线玩家时的配置
+# Behaviour when nobody is online
 no_online:
-  # 设置为false则没有在线玩家时不发送消息(倒计时和清理结果)
+  # Set to false to skip messages when there are no online players (countdown and results)
   message: true
-  # 设置为false则没有在线玩家时不清理(但是会显示清理倒计时)
+  # Set to false to skip cleaning when nobody is online (the countdown still shows)
   clean: true

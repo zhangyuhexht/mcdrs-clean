@@ -41,8 +41,8 @@ open class MCDRSClean : EPlugin {
     override val debugPrefix get() = langManager["debug_prefix"]
     override val prefix get() = langManager["prefix"]
 
-    // 不再复用上游插件的 bStats ID; 如需统计请申请自有 ID 后填入,
-    // 并在 config.yml 中打开 bstats 开关. ID 为 0 时不会发起任何上报.
+    // do not reuse the upstream bStats ID; apply for your own and fill it in to report stats,
+    // and enable bstats in config.yml. ID 0 sends nothing.
     override val bstatsId = 0
     override var debug: Boolean
         get() = Config.config.debug
@@ -58,7 +58,7 @@ open class MCDRSClean : EPlugin {
     override fun onEnable() {
         Lang.load(null)
         Config.load(null)
-        // bstats 的开关在配置里, 需要在 Config 加载之后再初始化
+        // bstats is toggled from config, so initialise it after Config loads
         if (!unit && Config.config.bstats && bstatsId > 0) bstats()
         Commands.register()
         Clean.schedule()
@@ -68,14 +68,14 @@ open class MCDRSClean : EPlugin {
         Trashcan.register()
         if (PapiHook.enable) Papi.register()
         for (line in logo) info(line)
-        info("&aMCDRS Clean 加载完成".color)
+        info("&aMCDRS Clean loaded".color)
     }
 
     override fun onDisable() {
         MenuManager.shutdown()
         if (PapiHook.enable) Papi.unregister()
         Bukkit.getScheduler().cancelTasks(this)
-        info("&aMCDRS Clean 已卸载".color)
+        info("&aMCDRS Clean disabled".color)
     }
 }
 
